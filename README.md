@@ -4,6 +4,10 @@ Fork de [openchamber](https://github.com/btriapitsyn/openchamber).
 
 Este repositório é uma cópia do projeto original com **modificações na UI** para uso pessoal. O projeto original foi criado por [btriapitsyn](https://github.com/btriapitsyn).
 
+Atualmente está assim:
+<img width="2560" height="989" alt="{A4FE22D4-1A50-4F96-8FCE-FE666569B539}" src="https://github.com/user-attachments/assets/d5bff7eb-ad10-4bc4-87bd-6faaebede5e3" />
+
+
 ---
 
 ## Sobre o Projeto Original
