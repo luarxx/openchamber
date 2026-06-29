@@ -19,6 +19,7 @@ type WebDirectoryEntry = {
   isDirectory?: boolean;
   isFile?: boolean;
   isSymbolicLink?: boolean;
+  isIgnored?: boolean;
 };
 
 type WebDirectoryListResponse = {
@@ -34,13 +35,14 @@ const toDirectoryListResult = (fallbackDirectory: string, payload: WebDirectoryL
   return {
     directory,
     entries: entries
-      .filter((entry): entry is Required<Pick<WebDirectoryEntry, 'name' | 'path'>> & { isDirectory?: boolean } =>
+      .filter((entry): entry is Required<Pick<WebDirectoryEntry, 'name' | 'path'>> & { isDirectory?: boolean; isIgnored?: boolean } =>
         Boolean(entry && typeof entry.name === 'string' && typeof entry.path === 'string')
       )
       .map((entry) => ({
         name: entry.name,
         path: normalizePath(entry.path),
         isDirectory: Boolean(entry.isDirectory),
+        ...(entry.isIgnored ? { isIgnored: true } : {}),
       })),
   };
 };
@@ -51,15 +53,13 @@ const directoryHeaders = (getDirectory?: () => string | undefined, override?: st
 };
 
 export const createWebFilesAPI = ({ getDirectory }: WebFilesAPIOptions): FilesAPI => ({
-  async listDirectory(path: string, options): Promise<DirectoryListResult> {
+  async listDirectory(path: string): Promise<DirectoryListResult> {
     const target = normalizePath(path);
     const params = new URLSearchParams();
     if (target) {
       params.set('path', target);
     }
-    if (options?.respectGitignore) {
-      params.set('respectGitignore', 'true');
-    }
+    params.set('respectGitignore', 'true');
 
     const response = await runtimeFetch('/api/fs/list', {
       query: params,

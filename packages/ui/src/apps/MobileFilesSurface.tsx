@@ -330,6 +330,7 @@ export const MobileFilesSurface: React.FC<MobileFilesSurfaceProps> = ({ onClose 
                 name={entry.name}
                 path={entry.path}
                 directory={entry.isDirectory}
+                isIgnored={entry.isIgnored}
                 meta={entry.isDirectory ? undefined : formatFileSize(entry.size)}
                 onClick={() => entry.isDirectory ? openDirectory(entry.path) : openFile(entry.path)}
               />
@@ -346,11 +347,15 @@ const MobileFileRow: React.FC<{
   path: string;
   directory: boolean;
   meta?: string;
+  isIgnored?: boolean;
   onClick: () => void;
-}> = ({ name, path, directory, meta, onClick }) => (
+}> = ({ name, path, directory, meta, isIgnored, onClick }) => (
   <button
     type="button"
-    className="flex min-h-14 w-full items-center gap-3 border-b border-border/30 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+    className={cn(
+      "flex min-h-14 w-full items-center gap-3 border-b border-border/30 px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset",
+      isIgnored && "opacity-40"
+    )}
     onClick={onClick}
     style={{ touchAction: 'manipulation' }}
   >

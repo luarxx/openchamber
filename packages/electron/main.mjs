@@ -2486,9 +2486,7 @@ const parseGithubRepo = () => {
 };
 
 const setupAutoUpdater = () => {
-  if (!app.isPackaged) {
-    return;
-  }
+  return;
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.allowPrerelease = false;
@@ -3530,31 +3528,7 @@ const handleInvoke = async (browserWindow, command, args = {}) => {
     }
 
     case 'desktop_check_for_updates': {
-      const currentVersion = APP_VERSION;
-      let updateResult = null;
-      try {
-        updateResult = await autoUpdater.checkForUpdates();
-      } catch {
-      }
-
-      const updateInfo = updateResult?.updateInfo;
-      const nextVersion =
-        (typeof updateInfo?.version === 'string' && updateInfo.version) ||
-        currentVersion;
-      const available = compareSemver(nextVersion, currentVersion) > 0;
-      const body =
-        (typeof updateInfo?.releaseNotes === 'string' && updateInfo.releaseNotes.trim() ? updateInfo.releaseNotes : null) ||
-        await parseRelevantChangelogNotes(currentVersion, nextVersion);
-      state.pendingUpdate = available ? { version: nextVersion, electronUpdate: updateResult } : null;
-      return {
-        available,
-        currentVersion,
-        version: available ? nextVersion : null,
-        body: body || null,
-        date:
-          (typeof updateInfo?.releaseDate === 'string' && updateInfo.releaseDate) ||
-          null,
-      };
+      return { available: false, currentVersion: APP_VERSION, version: null, body: null, date: null };
     }
 
     case 'desktop_download_and_install_update':

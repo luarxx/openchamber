@@ -59,7 +59,12 @@ export const parseServeCliOptions = ({
       const { value, nextIndex } = consumeValue(i, inlineValue);
       i = nextIndex;
       const parsedPort = parseInt(value ?? '', 10);
-      options.port = Number.isFinite(parsedPort) ? parsedPort : defaultPort;
+      if (Number.isFinite(parsedPort)) {
+        options.port = parsedPort;
+      } else {
+        const envPort = parseInt(env.OPENCHAMBER_PORT ?? '', 10);
+        options.port = Number.isFinite(envPort) ? envPort : defaultPort;
+      }
       continue;
     }
 

@@ -542,6 +542,7 @@ export interface FileListEntry {
   name: string;
   path: string;
   isDirectory: boolean;
+  isIgnored?: boolean;
   size?: number;
   modifiedTime?: number;
 }

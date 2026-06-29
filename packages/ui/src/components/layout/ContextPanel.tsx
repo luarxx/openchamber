@@ -2175,7 +2175,7 @@ export const ContextPanel: React.FC = () => {
       return;
     }
 
-    const delta = startXRef.current - event.clientX;
+    const delta = event.clientX - startXRef.current;
     const nextWidth = clampWidthToAvailableSpace(startWidthRef.current + delta, panelRef.current);
     if (resizingWidthRef.current === nextWidth) {
       return;
@@ -2559,7 +2559,7 @@ export const ContextPanel: React.FC = () => {
       inert={!isOpen || undefined}
       className={cn(
         'flex min-h-0 flex-col overflow-hidden bg-background',
-        !isExpanded && 'border-l border-border/40',
+        !isExpanded && 'border-r border-border/40',
         isExpanded
           ? 'absolute inset-0 z-20 min-w-0'
           : 'relative h-full flex-shrink-0',
@@ -2572,7 +2572,7 @@ export const ContextPanel: React.FC = () => {
       {!isExpanded && (
         <div
           className={cn(
-            'absolute left-0 top-0 z-50 h-full w-[3px] cursor-col-resize transition-colors hover:bg-[var(--interactive-border)]/80',
+            'absolute right-0 top-0 z-50 h-full w-[3px] cursor-col-resize transition-colors hover:bg-[var(--interactive-border)]/80',
             isResizing && 'bg-[var(--interactive-border)]'
           )}
           onPointerDown={handleResizeStart}

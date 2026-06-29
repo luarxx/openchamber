@@ -50,6 +50,7 @@ type FileNode = {
   type: 'file' | 'directory';
   extension?: string;
   relativePath?: string;
+  isIgnored?: boolean;
 };
 
 const sortNodes = (items: FileNode[]) =>
@@ -186,6 +187,7 @@ interface FileRowProps {
   root: string;
   isExpanded: boolean;
   isActive: boolean;
+  isIgnored?: boolean;
   status?: FileStatus | null;
   badge?: { modified: number; added: number } | null;
   permissions: {
@@ -207,6 +209,7 @@ const FileRow: React.FC<FileRowProps> = ({
   root,
   isExpanded,
   isActive,
+  isIgnored,
   status,
   badge,
   permissions,
@@ -333,16 +336,17 @@ const FileRow: React.FC<FileRowProps> = ({
         draggable
         onDragStart={handleDragStart}
         className={cn(
-          'flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left text-foreground transition-colors pr-8 select-none',
+          'flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left transition-colors pr-8 select-none',
+          isIgnored ? 'text-muted-foreground/40' : 'text-foreground',
           isActive ? 'bg-interactive-selection/70' : 'hover:bg-interactive-hover/40',
           'cursor-grab active:cursor-grabbing'
         )}
       >
         {isDir ? (
           isExpanded ? (
-            <Icon name="folder-open-fill" className="h-4 w-4 flex-shrink-0 text-primary/60" />
+            <Icon name="folder-open-fill" className={cn("h-4 w-4 flex-shrink-0", isIgnored ? "text-muted-foreground/40" : "text-primary/60")} />
           ) : (
-            <Icon name="folder-3-fill" className="h-4 w-4 flex-shrink-0 text-primary/60" />
+            <Icon name="folder-3-fill" className={cn("h-4 w-4 flex-shrink-0", isIgnored ? "text-muted-foreground/40" : "text-primary/60")} />
           )
         ) : (
           getFileIcon(node.path, node.extension)
@@ -402,6 +406,7 @@ const areFileRowPropsEqual = (prev: FileRowProps, next: FileRowProps): boolean =
   && prev.root === next.root
   && prev.isExpanded === next.isExpanded
   && prev.isActive === next.isActive
+  && prev.isIgnored === next.isIgnored
   && prev.status === next.status
   && prev.badge === next.badge
   && prev.permissions === next.permissions
@@ -550,7 +555,7 @@ export const SidebarFilesTree: React.FC = () => {
     setIsDialogSubmitting(false);
   }, []);
 
-  const mapDirectoryEntries = React.useCallback((dirPath: string, entries: Array<{ name: string; path: string; isDirectory: boolean }>): FileNode[] => {
+  const mapDirectoryEntries = React.useCallback((dirPath: string, entries: Array<{ name: string; path: string; isDirectory: boolean; isIgnored?: boolean }>): FileNode[] => {
     const nodes = entries
       .filter((entry) => entry && typeof entry.name === 'string' && entry.name.length > 0)
       .filter((entry) => showHidden || !entry.name.startsWith('.'))
@@ -565,7 +570,7 @@ export const SidebarFilesTree: React.FC = () => {
           : normalizePath(`${dirPath}/${name}`);
         const type = entry.isDirectory ? 'directory' : 'file';
         const extension = type === 'file' && name.includes('.') ? name.split('.').pop()?.toLowerCase() : undefined;
-        return { name, path, type, extension };
+        return { name, path, type, extension, ...(entry.isIgnored ? { isIgnored: true } : {}) };
       });
 
     return sortNodes(nodes);
@@ -585,11 +590,13 @@ export const SidebarFilesTree: React.FC = () => {
         name: entry.name,
         path: entry.path,
         isDirectory: entry.isDirectory,
+        ...(entry.isIgnored ? { isIgnored: true } : {}),
       })))
       : opencodeClient.listLocalDirectory(normalizedDir).then((result) => result.map((entry) => ({
         name: entry.name,
         path: entry.path,
         isDirectory: entry.isDirectory,
+        ...(entry.isIgnored ? { isIgnored: true } : {}),
       })));
 
     try {
@@ -988,6 +995,7 @@ export const SidebarFilesTree: React.FC = () => {
             root={root}
             isExpanded={isExpanded}
             isActive={isActive}
+            isIgnored={node.isIgnored}
             status={!isDir ? getFileStatus(node.path) : undefined}
             badge={isDir ? getFolderBadge(node.path) : undefined}
             permissions={fileRowPermissions}

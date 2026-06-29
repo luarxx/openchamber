@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useSessionUIStore } from '@/sync/session-ui-store';
-import { useTerminalStore } from '@/stores/useTerminalStore';
+import { useTerminalStore, normalizeDirectory } from '@/stores/useTerminalStore';
 import { useEffectiveDirectory } from '@/hooks/useEffectiveDirectory';
 import { type TerminalStreamEvent } from '@/lib/api/types';
 import { useThemeSystem } from '@/contexts/useThemeSystem';
@@ -121,7 +121,7 @@ export const TerminalView: React.FC = () => {
 
     const directoryTerminalState = React.useMemo(() => {
         if (!effectiveDirectory) return undefined;
-        return terminalSessions.get(effectiveDirectory);
+        return terminalSessions.get(normalizeDirectory(effectiveDirectory));
     }, [terminalSessions, effectiveDirectory]);
 
     const activeTabId = React.useMemo(() => {
@@ -1196,6 +1196,11 @@ export const TerminalView: React.FC = () => {
                             enableTouchScroll={useTouchTerminalInput}
                             autoFocus={!useTouchTerminalInput && isTerminalVisible}
                             isVisible={isTerminalVisible}
+                            onLinkClick={(url) => {
+                                if (effectiveDirectory) {
+                                    openContextPreview(effectiveDirectory, url);
+                                }
+                            }}
                         />
                     ) : null}
                 </div>

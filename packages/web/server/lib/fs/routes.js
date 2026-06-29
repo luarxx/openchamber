@@ -1365,9 +1365,7 @@ export const registerFsRoutes = (app, dependencies) => {
       const entries = await Promise.all(
         dirents.map(async (dirent) => {
           const entryPath = path.join(resolvedPath, dirent.name);
-          if (respectGitignore && ignoredPaths.has(entryPath)) {
-            return null;
-          }
+          const isIgnored = respectGitignore && ignoredPaths.has(entryPath);
 
           let isDirectory = dirent.isDirectory();
           const isSymbolicLink = dirent.isSymbolicLink();
@@ -1387,13 +1385,14 @@ export const registerFsRoutes = (app, dependencies) => {
             isDirectory,
             isFile: dirent.isFile(),
             isSymbolicLink,
+            ...(isIgnored ? { isIgnored: true } : {}),
           };
         })
       );
 
       return res.json({
         path: resolvedPath,
-        entries: entries.filter(Boolean),
+        entries,
       });
     } catch (error) {
       const err = error;

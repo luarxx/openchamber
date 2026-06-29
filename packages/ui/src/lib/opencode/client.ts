@@ -175,6 +175,7 @@ type FilesystemEntry = {
   isDirectory: boolean;
   isFile: boolean;
   isSymbolicLink?: boolean;
+  isIgnored?: boolean;
 };
 
 export type ProjectFileSearchHit = {
@@ -1613,9 +1614,9 @@ class OpencodeService {
     return await response.json();
   }
 
-  async listLocalDirectory(directoryPath: string | null | undefined, options?: { respectGitignore?: boolean }): Promise<FilesystemEntry[]> {
+  async listLocalDirectory(directoryPath: string | null | undefined): Promise<FilesystemEntry[]> {
     const normalizedDirectoryPath = typeof directoryPath === 'string' ? normalizeFsPath(directoryPath.trim()) : '';
-    const cacheKey = `${normalizedDirectoryPath}|${options?.respectGitignore ? '1' : '0'}`;
+    const cacheKey = normalizedDirectoryPath;
     const now = Date.now();
     const cached = this.listDirectoryCache.get(cacheKey);
     if (cached && cached.expiresAt > now) {
@@ -1631,7 +1632,7 @@ class OpencodeService {
     const desktopFiles = getDesktopFilesApi();
     if (desktopFiles) {
       try {
-        const result = await desktopFiles.listDirectory(directoryPath || '', options);
+        const result = await desktopFiles.listDirectory(directoryPath || '', { respectGitignore: true });
         if (!result || !Array.isArray(result.entries)) {
           return [];
         }
@@ -1641,6 +1642,7 @@ class OpencodeService {
           isDirectory: !!entry.isDirectory,
           isFile: !entry.isDirectory,
           isSymbolicLink: false,
+          ...(entry.isIgnored ? { isIgnored: true } : {}),
         }));
         this.listDirectoryCache.set(cacheKey, {
           entries,
@@ -1658,9 +1660,7 @@ class OpencodeService {
       if (directoryPath && directoryPath.trim().length > 0) {
         params.set('path', directoryPath);
       }
-      if (options?.respectGitignore) {
-        params.set('respectGitignore', 'true');
-      }
+      params.set('respectGitignore', 'true');
       const query = params.toString();
       const response = await runtimeFetch(`${this.baseUrl}/fs/list${query ? `?${query}` : ''}`);
       if (!response.ok) {

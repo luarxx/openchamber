@@ -501,7 +501,7 @@ export const MainLayout: React.FC = () => {
                             className="border-border/50"
                             topBar={<SidebarTopBar />}
                         >
-                            <SessionSidebar />
+                            <ErrorBoundary><RightSidebarTabs /></ErrorBoundary>
                         </Sidebar>
                         <div className="relative flex flex-1 min-w-0 flex-col overflow-hidden bg-background" data-page-scroll-lock="true">
                             <Header />
@@ -509,6 +509,7 @@ export const MainLayout: React.FC = () => {
                                 <div className="relative flex flex-1 min-w-0 flex-col overflow-hidden border-t border-border/50 bg-background" data-page-scroll-lock="true">
                                     <div className="flex flex-1 min-h-0 overflow-hidden" data-page-scroll-lock="true">
                                         <div className="relative flex flex-1 min-h-0 min-w-0 overflow-hidden" data-page-scroll-lock="true">
+                                            <ContextPanel />
                                             <main className="flex-1 overflow-hidden bg-background relative" data-page-scroll-lock="true">
                                                 <div className={cn('absolute inset-0', !isChatActive && 'invisible')}>
                                                     <ErrorBoundary><ChatView /></ErrorBoundary>
@@ -519,7 +520,6 @@ export const MainLayout: React.FC = () => {
                                                     </div>
                                                 )}
                                             </main>
-                                            <ContextPanel />
                                         </div>
                                     </div>
                                     <BottomTerminalDock isOpen={isBottomTerminalOpen} isMobile={isMobile}>
@@ -536,7 +536,7 @@ export const MainLayout: React.FC = () => {
                                     isOpen={isRightSidebarOpen}
                                     className="bg-background border-t border-border/50"
                                 >
-                                    <ErrorBoundary><RightSidebarTabs /></ErrorBoundary>
+                                    <SessionSidebar />
                                 </RightSidebar>
                             </div>
                         </div>

@@ -98,10 +98,14 @@ const tabIdNumber = (tabId: string): number | null => {
   return Number.isFinite(num) ? num : null;
 };
 
-function normalizeDirectory(dir: string): string {
-  let normalized = dir.trim();
-  while (normalized.length > 1 && normalized.endsWith('/')) {
-    normalized = normalized.slice(0, -1);
+export function normalizeDirectory(dir: string): string {
+  const trimmed = dir.trim();
+  if (!trimmed) return trimmed;
+  const normalized = trimmed
+    .replace(/\\/g, '/')
+    .replace(/^([a-z]):/, (_, letter: string) => letter.toUpperCase() + ':');
+  if (normalized.length > 1) {
+    return normalized.replace(/\/+$/, '');
   }
   return normalized;
 }

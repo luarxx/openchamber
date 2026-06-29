@@ -85,6 +85,7 @@ interface TerminalViewportProps {
   enableTouchScroll?: boolean;
   autoFocus?: boolean;
   isVisible?: boolean;
+  onLinkClick?: (url: string) => void;
 }
 
 const TerminalViewport = React.forwardRef<TerminalController, TerminalViewportProps>(
@@ -101,6 +102,7 @@ const TerminalViewport = React.forwardRef<TerminalController, TerminalViewportPr
       enableTouchScroll,
       autoFocus = true,
       isVisible = true,
+      onLinkClick,
     },
     ref
   ) => {
@@ -131,10 +133,13 @@ const TerminalViewport = React.forwardRef<TerminalController, TerminalViewportPr
     const cursorBlinkStateRef = React.useRef<boolean | null>(null);
     const focusArmedRef = React.useRef(!enableTouchScroll);
     const previousVisibleRef = React.useRef(isVisible);
+    const linkClickInterceptedRef = React.useRef(false);
+    const onLinkClickRef = React.useRef(onLinkClick);
     const [, forceRender] = React.useReducer((x) => x + 1, 0);
     const [terminalReadyVersion, bumpTerminalReady] = React.useReducer((x) => x + 1, 0);
     inputHandlerRef.current = onInput;
     resizeHandlerRef.current = onResize;
+    onLinkClickRef.current = onLinkClick;
 
     const isAndroid = typeof navigator !== 'undefined' && (
       /Android/i.test(navigator.userAgent) ||
@@ -1624,7 +1629,48 @@ const TerminalViewport = React.forwardRef<TerminalController, TerminalViewportPr
             focusHiddenInput(touch?.clientX, touch?.clientY);
           }
         }}
+        onClickCapture={(event) => {
+          const terminal = terminalRef.current;
+          if (!terminal || !onLinkClickRef.current) {
+            return;
+          }
+          const nativeEvent = event.nativeEvent as MouseEvent;
+          const linkDetector = (terminal as unknown as { linkDetector?: { getLinkAt: (col: number, row: number) => Promise<{ text: string } | undefined> } }).linkDetector;
+          const renderer = (terminal as unknown as { renderer?: { charWidth?: number; charHeight?: number } }).renderer;
+          if (!linkDetector || !renderer?.charWidth || !renderer?.charHeight) {
+            return;
+          }
+          const element = (terminal as unknown as { element?: HTMLElement }).element;
+          if (!element) {
+            return;
+          }
+          const rect = element.getBoundingClientRect();
+          const col = Math.floor((nativeEvent.clientX - rect.left) / renderer.charWidth);
+          const row = Math.floor((nativeEvent.clientY - rect.top) / renderer.charHeight);
+          if (col < 0 || row < 0) {
+            return;
+          }
+          const scrollbackLength = (terminal as unknown as { getScrollbackLength?: () => number }).getScrollbackLength?.() ?? 0;
+          const viewportY = typeof terminal.getViewportY === 'function' ? terminal.getViewportY() : 0;
+          const absoluteRow = Math.max(0, Math.floor(viewportY)) > 0
+            ? scrollbackLength - Math.max(0, Math.floor(viewportY)) + row
+            : scrollbackLength + row;
+          void linkDetector.getLinkAt(col, absoluteRow).then((link) => {
+            if (link?.text) {
+              linkClickInterceptedRef.current = true;
+              nativeEvent.preventDefault();
+              nativeEvent.stopPropagation();
+              onLinkClickRef.current?.(link.text);
+            }
+          }).catch(() => {
+            // ignored
+          });
+        }}
         onClick={(event) => {
+          if (linkClickInterceptedRef.current) {
+            linkClickInterceptedRef.current = false;
+            return;
+          }
           if (enableTouchScroll) {
             return;
           }

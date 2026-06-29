@@ -122,11 +122,11 @@ export const RightSidebarTabs: React.FC = () => {
   const { t } = useI18n();
   const rightSidebarTab = useUIStore((state) => state.rightSidebarTab);
   const setRightSidebarTab = useUIStore((state) => state.setRightSidebarTab);
-  const isRightSidebarOpen = useUIStore((state) => state.isRightSidebarOpen);
+  const isLeftSidebarOpen = useUIStore((state) => state.isSidebarOpen);
   const activeMainTab = useUIStore((state) => state.activeMainTab);
   const directory = useEffectiveDirectory();
 
-  useRightSidebarGitSync(directory, isRightSidebarOpen, rightSidebarTab, activeMainTab);
+  useRightSidebarGitSync(directory, isLeftSidebarOpen, rightSidebarTab, activeMainTab);
 
   // When the main view already hosts a right-tab equivalent (e.g. main tab
   // 'git' renders GitView in the secondary slot), the right sidebar's
@@ -171,7 +171,7 @@ export const RightSidebarTabs: React.FC = () => {
     () => (hiddenRightTab ? tabItems.filter((item) => item.id !== hiddenRightTab) : tabItems),
     [tabItems, hiddenRightTab]
   );
-  const isRightGitTabActive = isRightSidebarOpen && rightSidebarTab === 'git' && hiddenRightTab !== 'git';
+  const isRightGitTabActive = isLeftSidebarOpen && rightSidebarTab === 'git' && hiddenRightTab !== 'git';
 
   const handleTabSelect = React.useCallback(
     (tabID: string) => {
