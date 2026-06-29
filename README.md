@@ -4,8 +4,8 @@ Fork de [openchamber](https://github.com/btriapitsyn/openchamber).
 
 Este repositório é uma cópia do projeto original com **modificações na UI** para uso pessoal. O projeto original foi criado por [btriapitsyn](https://github.com/btriapitsyn).
 
-Atualmente está assim:
-<img width="2560" height="989" alt="{A4FE22D4-1A50-4F96-8FCE-FE666569B539}" src="https://github.com/user-attachments/assets/d5bff7eb-ad10-4bc4-87bd-6faaebede5e3" />
+Visão geral do OpenChamber Desktop com o layout inspirado no VSCode, explorador de arquivos à esquerda, editor de código + terminal integrado ao centro, e painel de chat com o agente de IA à direita:
+<img width="2560" height="989" alt="Captura de tela do OpenChamber Desktop: explorador de arquivos à esquerda, editor Markdown + terminal ao centro, chat do agente com diff de commit à direita" src="https://github.com/user-attachments/assets/d5bff7eb-ad10-4bc4-87bd-6faaebede5e3" />
 
 
 ---
