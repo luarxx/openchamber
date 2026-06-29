@@ -72,9 +72,9 @@ export function createTerminalRuntime({
       const windowsCandidates = [
         process.env.OPENCHAMBER_TERMINAL_SHELL,
         process.env.SHELL,
+        'pwsh.exe',
         process.env.ComSpec,
         path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe'),
-        'pwsh.exe',
         'powershell.exe',
         'cmd.exe',
       ].filter(Boolean);

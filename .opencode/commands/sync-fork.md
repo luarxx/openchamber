@@ -23,6 +23,8 @@ Este fork possui as seguintes alterações intencionais em relação ao upstream
 | 9 | **AgentsStore null handling simplificado** | `packages/ui/src/stores/useAgentsStore.ts` | Manter versão do fork |
 | 10 | **VS Code config bridge simplificado** | `packages/vscode/src/opencodeConfig.ts`, `packages/vscode/src/bridge-config-runtime.test.js` | Manter versão do fork |
 | 11 | **Versão dos package.json mantida** | `package.json`, `packages/*/package.json` | Manter versão do fork |
+| 12 | **Referência ao /update-fork-catalog** | `AGENTS.md` | Manter versão do fork |
+| 13 | **Prioridade pwsh.exe no fallback de shell** | `packages/web/server/lib/terminal/runtime.js` | Manter versão do fork |
 
 ## Pre-flight
 

@@ -224,7 +224,7 @@ All scripts are in `package.json`.
 
 ## Development rules
 
-- **Fork customization catalog**: When you add, remove, or modify a fork-specific change (any intentional divergence from upstream `btriapitsyn/openchamber`), you MUST update the catalog in `.opencode/commands/sync-fork.md` to reflect the change. Add a new row if the change is new; remove the row if the customization was reverted; update the file list and description if the scope changed. This ensures `/sync-fork` and `/check-upstream` stay accurate and don't silently overwrite or miss customizations during the next merge.
+- **Fork customization catalog**: When you add, remove, or modify a fork-specific change (any intentional divergence from upstream `btriapitsyn/openchamber`), you MUST update the catalog in `.opencode/commands/sync-fork.md` to reflect the change. Add a new row if the change is new; remove the row if the customization was reverted; update the file list and description if the scope changed. This ensures `/sync-fork` and `/check-upstream` stay accurate and don't silently overwrite or miss customizations during the next merge. You can also run `/update-fork-catalog` to be guided through the process interactively.
 - Keep diffs tight; avoid drive-by refactors.
 - Follow local precedent; inspect nearby code before introducing new patterns.
 - Backend changes: keep web, desktop, and VS Code behavior consistent when they share contracts.
