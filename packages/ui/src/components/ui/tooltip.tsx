@@ -274,7 +274,7 @@ function TooltipContent({
           <BaseTooltip.Popup
             data-slot="tooltip-content"
             className={cn(
-              "bg-muted text-muted-foreground border border-border/60 transition-all duration-150 ease-out data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 z-50 w-fit origin-[var(--transform-origin)] rounded-xl px-3 py-1.5 typography-meta text-balance overflow-hidden",
+              "bg-[var(--surface-elevated)] text-foreground border border-border/60 transition-all duration-100 ease-out data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 z-50 w-fit origin-[var(--transform-origin)] rounded-[2px] px-2 py-1 typography-meta text-balance overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.16)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.36)]",
               className
             )}
             style={{ ...style }}

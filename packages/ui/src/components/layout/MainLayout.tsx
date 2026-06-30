@@ -8,6 +8,8 @@ import { TitlebarLeftControls } from './TitlebarLeftControls';
 import { RightSidebar } from './RightSidebar';
 import { ProjectContextPanel, RightSidebarTabs } from './RightSidebarTabs';
 import { ContextPanel } from './ContextPanel';
+import { ActivityBar } from './ActivityBar';
+import { StatusBar } from './StatusBar';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import { CommandPalette } from '../ui/CommandPalette';
 import { HelpDialog } from '../ui/HelpDialog';
@@ -490,55 +492,60 @@ export const MainLayout: React.FC = () => {
                 </DrawerProvider>
             ) : (
                 <>
-                    {/* Persistent top-left controls (toggle + project actions) that
-                        stay put while the sidebar/header animate beneath them. */}
-                    <TitlebarLeftControls />
-                    {/* Desktop: full-height Sidebar beside [Header above (chat | RightSidebar)] */}
-                    <div className="flex flex-1 overflow-hidden" data-page-scroll-lock="true">
-                        <Sidebar
-                            isOpen={isSidebarOpen}
-                            isMobile={isMobile}
-                            className="border-border/50"
-                            topBar={<SidebarTopBar />}
-                        >
-                            <ErrorBoundary><RightSidebarTabs /></ErrorBoundary>
-                        </Sidebar>
-                        <div className="relative flex flex-1 min-w-0 flex-col overflow-hidden bg-background" data-page-scroll-lock="true">
-                            <Header />
-                            <div className="relative flex flex-1 min-h-0 overflow-hidden bg-background" data-page-scroll-lock="true">
-                                <div className="relative flex flex-1 min-w-0 flex-col overflow-hidden border-t border-border/50 bg-background" data-page-scroll-lock="true">
-                                    <div className="flex flex-1 min-h-0 overflow-hidden" data-page-scroll-lock="true">
-                                        <div className="relative flex flex-1 min-h-0 min-w-0 overflow-hidden" data-page-scroll-lock="true">
-                                            <ContextPanel />
-                                            <main className="flex-1 overflow-hidden bg-background relative" data-page-scroll-lock="true">
-                                                <div className={cn('absolute inset-0', !isChatActive && 'invisible')}>
-                                                    <ErrorBoundary><ChatView /></ErrorBoundary>
-                                                </div>
-                                                {secondaryView && (
-                                                    <div className="absolute inset-0">
-                                                        <ErrorBoundary>{secondaryView}</ErrorBoundary>
-                                                    </div>
-                                                )}
-                                            </main>
-                                        </div>
-                                    </div>
-                                    <BottomTerminalDock isOpen={isBottomTerminalOpen} isMobile={isMobile}>
-                                        {isBottomTerminalOpen ? (
-                                            <ErrorBoundary>
-                                                <React.Suspense fallback={null}>
-                                                    <TerminalView />
-                                                </React.Suspense>
-                                            </ErrorBoundary>
-                                        ) : null}
-                                    </BottomTerminalDock>
-                                </div>
-                                <RightSidebar
-                                    isOpen={isRightSidebarOpen}
-                                    className="bg-background border-t border-border/50"
+                    <div className="flex h-full flex-1 overflow-hidden" data-page-scroll-lock="true">
+                        <ActivityBar />
+                        <div className="flex flex-1 flex-col overflow-hidden" data-page-scroll-lock="true">
+                            <div className="flex flex-1 overflow-hidden" data-page-scroll-lock="true">
+                                {/* Persistent top-left controls (toggle + project actions) that
+                                    stay put while the sidebar/header animate beneath them. */}
+                                <TitlebarLeftControls />
+                                <Sidebar
+                                    isOpen={isSidebarOpen}
+                                    isMobile={isMobile}
+                                    className="border-border/50"
+                                    topBar={<SidebarTopBar />}
                                 >
-                                    <SessionSidebar />
-                                </RightSidebar>
+                                    <ErrorBoundary><RightSidebarTabs /></ErrorBoundary>
+                                </Sidebar>
+                                <div className="relative flex flex-1 min-w-0 flex-col overflow-hidden bg-background" data-page-scroll-lock="true">
+                                    <Header />
+                                    <div className="relative flex flex-1 min-h-0 overflow-hidden bg-background" data-page-scroll-lock="true">
+                                        <div className="relative flex flex-1 min-w-0 flex-col overflow-hidden border-t border-border/50 bg-background" data-page-scroll-lock="true">
+                                            <div className="flex flex-1 min-h-0 overflow-hidden" data-page-scroll-lock="true">
+                                                <div className="relative flex flex-1 min-h-0 min-w-0 overflow-hidden" data-page-scroll-lock="true">
+                                                    <ContextPanel />
+                                                    <main className="flex-1 overflow-hidden bg-background relative" data-page-scroll-lock="true">
+                                                        <div className={cn('absolute inset-0', !isChatActive && 'invisible')}>
+                                                            <ErrorBoundary><ChatView /></ErrorBoundary>
+                                                        </div>
+                                                        {secondaryView && (
+                                                            <div className="absolute inset-0">
+                                                                <ErrorBoundary>{secondaryView}</ErrorBoundary>
+                                                            </div>
+                                                        )}
+                                                    </main>
+                                                </div>
+                                            </div>
+                                            <BottomTerminalDock isOpen={isBottomTerminalOpen} isMobile={isMobile}>
+                                                {isBottomTerminalOpen ? (
+                                                    <ErrorBoundary>
+                                                        <React.Suspense fallback={null}>
+                                                            <TerminalView />
+                                                        </React.Suspense>
+                                                    </ErrorBoundary>
+                                                ) : null}
+                                            </BottomTerminalDock>
+                                        </div>
+                                        <RightSidebar
+                                            isOpen={isRightSidebarOpen}
+                                            className="bg-background border-t border-border/50"
+                                        >
+                                            <SessionSidebar />
+                                        </RightSidebar>
+                                    </div>
+                                </div>
                             </div>
+                            <StatusBar />
                         </div>
                     </div>
 

@@ -164,17 +164,17 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         onPointerDown={focusInnerTextarea}
         style={effectiveResizedHeight !== null ? { height: `${effectiveResizedHeight}px` } : undefined}
         className={cn(
-          "group/textarea relative flex w-full flex-col rounded-[var(--radius-xl)] bg-[var(--surface-elevated)] pb-2.5",
-          "ring-1 ring-inset ring-border/60 transition duration-200 ease-out",
+          "group/textarea relative flex w-full flex-col rounded-[2px] bg-[var(--surface-elevated)] pb-2.5",
+          "border border-border/60 transition duration-150 ease-out",
           "hover:[&:not(:focus-within)]:bg-[var(--surface-subtle)]",
-          "has-[[disabled]]:pointer-events-none has-[[disabled]]:bg-[var(--surface-subtle)] has-[[disabled]]:ring-transparent",
+          "has-[[disabled]]:pointer-events-none has-[[disabled]]:bg-[var(--surface-subtle)] has-[[disabled]]:border-transparent",
           !hasError && [
-            "hover:[&:not(:focus-within)]:ring-transparent",
-            "focus-within:ring-2 focus-within:ring-[var(--interactive-focus-ring)]",
+            "hover:[&:not(:focus-within)]:border-transparent",
+            "focus-within:border-[var(--interactive-focus-ring)]",
           ],
           hasError && [
-            "ring-[var(--status-error)]",
-            "focus-within:ring-2 focus-within:ring-[var(--status-error)]",
+            "border-[var(--status-error)]",
+            "focus-within:border-[var(--status-error)]",
           ],
           outerClassName,
         )}
